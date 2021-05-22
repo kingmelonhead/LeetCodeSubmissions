@@ -1,0 +1,46 @@
+class Solution {
+public:
+    double findMedianSortedArrays(vector<int>& nums1, vector<int>& nums2) {
+        
+        int total_size = nums1.size() + nums2.size();
+        int median_loc, num1 = 0, num2 = 0, index1 = 0, index2 = 0;
+        bool even;
+        
+        if (total_size % 2 == 0) even = true;
+        else even = false;
+        
+        if (even) median_loc = total_size / 2;
+        else median_loc = (total_size - 1) / 2;
+        
+        if (nums1.size() == 0 && nums2.size() == 0) return -1; //safety feature 
+        if (nums1.size() == 0){ // handles the 1st vector being empty
+            if (even) return (double)(nums2[median_loc] + nums2[median_loc-1]) / 2;
+            else return (double)nums2[median_loc];
+        }
+        else if (nums2.size() == 0){ // handles the 2nd vector being empty
+            if (even) return (double)(nums1[median_loc] + nums1[median_loc - 1]) / 2;
+            else return (double)nums1[median_loc];
+        }
+        else { //normal case
+            for (int i = 0; i <= median_loc; i++){
+                num2 = num1;
+                if (index1 < nums1.size() && index2 < nums2.size()){
+                    if (nums1[index1] <= nums2[index2]) num1 = nums1[index1++];
+                    else num1 = nums2[index2++];
+                }
+                else if (index1 == nums1.size()){
+                    if (i != median_loc) num2 = nums2[index2 + (median_loc - i) - 1];
+                    num1 = nums2[index2 + (median_loc - i)];
+                    break;
+                }
+                else {
+                    if (i != median_loc) num2 = nums1[index1 + (median_loc - i) - 1];
+                    num1 = nums1[index1 + (median_loc - i)];
+                    break;
+                }
+            }
+        }
+        if (even) return (double)(num1 + num2) / 2;
+        else return num1;
+    }
+};
